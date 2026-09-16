@@ -13,13 +13,16 @@
 .footer-note { text-align: center; color: var(--muted); font-size: 13px; padding: 18px; }
 
 @media (max-width: 1024px) {
+  .sidebar-modern { width: 88px; }
+  .sidebar-modern .side-link span.label,
+  .sidebar-modern .doc-card,
+  .sidebar-modern .brand-text,
+  .sidebar-modern .brand-sub { display: none; }
+  .sidebar-modern .side-link { justify-content: center; padding: 12px; }
   h1.kiosk-display { font-size: 36px; line-height: 44px; }
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .split { grid-template-columns: 1fr; }
   .split-2 { grid-template-columns: 1fr; }
-  .sidebar { width: 88px; }
-  .sidebar .label, .sidebar .doc-card, .sidebar .brand .sub { display: none; }
-  .side-link { justify-content: center; }
   .login-wrap { grid-template-columns: 1fr; }
   .login-side { padding: 28px; }
 }
@@ -32,9 +35,9 @@
   .kiosk-nav { flex-direction: column; }
   .token-hero .num { font-size: 56px; }
   .staff-body { padding: 16px; }
-  .topbar { flex-wrap: wrap; }
+  .topbar-modern { flex-wrap: wrap; }
 }
 @media print {
-  .sidebar, .topbar, .kiosk-nav, .kiosk-top, .no-print { display: none !important; }
-  .staff-body, .kiosk-body { padding: 0; }
+  .sidebar-modern, .topbar-modern, .no-print { display: none !important; }
+  .staff-body { padding: 0; }
 }

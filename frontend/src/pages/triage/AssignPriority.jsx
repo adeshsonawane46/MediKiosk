@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StaffShell from '../../components/StaffShell';
 import { api } from '../../data/api';
+import { updateQueueToken } from '../../data/queueStore';
 
 const OPTS = [
   { id: 'P1', t: 'P1 · Emergency', c: 'Chest pain / ACS signs · severe vitals breach · needs STAT MD' },
@@ -18,6 +19,11 @@ export default function AssignPriority() {
   const lock = async () => {
     if (why.trim().length < 10) { setErr('Rationale required (min 10 chars) — NABH audit.'); return; }
     setErr('');
+
+    // Update local queue store immediately (syncs to doctor/admin dashboards)
+    updateQueueToken(id, { priority: p, rationale: why });
+
+    // Also try to sync to backend
     try {
       await api.patch(`/tokens/${id}`, { priority: p, rationale: why });
       if (p === 'P1') await api.post('/alerts', { tokenNo: id, level: 'P1', msg: 'STAT escalation from triage' });

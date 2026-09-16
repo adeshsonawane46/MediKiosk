@@ -1,4 +1,4 @@
-/* MediKiosk Clinical Direct design tokens */
+/* MediKiosk Clinical Direct design tokens — Modern Refresh */
 :root {
   --navy: #172554;
   --navy-text: #172554;
@@ -15,20 +15,23 @@
   --ink: #0F172A;
   --ink-2: #334155;
   --muted: #64748B;
-  --line: #CBD5E1;
+  --line: #E2E8F0;
   --line-2: #94A3B8;
   --p1: #DC2626; --p1-bg: #FEF2F2; --p1-ink: #991B1B;
   --p2: #D97706; --p2-bg: #FFFBEB; --p2-ink: #92400E;
   --p3: #059669; --p3-bg: #ECFDF5; --p3-ink: #065F46;
-  --radius-card: 12px;
-  --radius-btn: 8px;
-  --radius-tag: 4px;
+  --radius-card: 16px;
+  --radius-btn: 10px;
+  --radius-tag: 6px;
   --font-head: 'Montserrat', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --touch-patient: 64px;
   --touch-staff: 44px;
-  --shadow-1: 0px 4px 12px rgba(10, 37, 64, 0.08);
-  --shadow-2: 0px 8px 24px rgba(15, 23, 42, 0.16);
+  --shadow-1: 0px 1px 3px rgba(10, 37, 64, 0.04), 0px 4px 12px rgba(10, 37, 64, 0.06);
+  --shadow-2: 0px 4px 6px rgba(15, 23, 42, 0.04), 0px 12px 28px rgba(15, 23, 42, 0.1);
+  --shadow-3: 0px 8px 16px rgba(15, 23, 42, 0.06), 0px 20px 48px rgba(15, 23, 42, 0.12);
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark Theme */
@@ -42,8 +45,8 @@ body.dark-theme {
   --line-2: #475569;
   --blue-soft: #022C22;
   --blue-border: #047857;
-  --navy: #1E3A8A; /* Lighter navy for dark mode visibility if used as bg */
-  --navy-text: #FFFFFF; /* Makes GYAV white in dark mode */
+  --navy: #1E3A8A;
+  --navy-text: #FFFFFF;
   --saffron-soft: #431407;
   --p1-bg: #450A0A;
   --p2-bg: #422006;

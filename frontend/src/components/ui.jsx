@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Icon from './Icon';
 
 export function PriorityTag({ level, label }) {
   const cls = level === 'P1' ? 'tag-p1' : level === 'P2' ? 'tag-p2' : 'tag-p3';
@@ -147,13 +148,44 @@ export function VoiceBar({ text = 'Voice guidance enabled. Tap the speaker icon 
     <div className="voice-bar">
       <span className="wave" aria-hidden><i style={{ height: 10 }} /><i style={{ height: 18 }} /><i style={{ height: 12 }} /><i style={{ height: 20 }} /></span>
       <span style={{ flex: 1 }}><span className="audio-dot" />{text}</span>
-      <button className="btn btn-ghost btn-sm" onClick={speak}>🔊 Listen</button>
+      <button className="btn btn-ghost btn-sm" onClick={speak}> Listen</button>
     </div>
   );
 }
 
 export function Kpi({ v, l, sub }) {
   return <div className="kpi"><div className="v">{v}</div><div className="l">{l}</div>{sub && <div className="small muted">{sub}</div>}</div>;
+}
+
+export function StatWidget({ v, l, sub, icon, bg = '#fff' }) {
+  const iconColors = {
+    clipboard: 'var(--navy)', queue: 'var(--blue-dark)', flask: 'var(--saffron)',
+    check: 'var(--p3)', patients: 'var(--blue-dark)', alert: 'var(--p1)',
+    clock: 'var(--saffron)', heart: 'var(--p3)', kiosk: 'var(--navy)',
+    stethoscope: 'var(--blue-dark)', activity: 'var(--navy)', settings: 'var(--muted)',
+    audit: 'var(--navy)', document: 'var(--blue-dark)', timeline: 'var(--p3)',
+    workspace: 'var(--blue-dark)', analytics: 'var(--navy)',
+  };
+  const iconColor = iconColors[icon] || 'var(--navy)';
+  const iconBgMap = {
+    clipboard: 'rgba(23, 37, 84, 0.08)', queue: 'rgba(19, 136, 8, 0.1)', flask: 'rgba(255, 153, 51, 0.1)',
+    check: 'var(--p3-bg)', patients: 'rgba(19, 136, 8, 0.1)', alert: 'var(--p1-bg)',
+    clock: 'rgba(255, 153, 51, 0.1)', heart: 'var(--p3-bg)', kiosk: 'rgba(23, 37, 84, 0.08)',
+    stethoscope: 'rgba(19, 136, 8, 0.1)', activity: 'rgba(23, 37, 84, 0.08)', settings: 'var(--bg-rec)',
+    audit: 'rgba(23, 37, 84, 0.08)', document: 'rgba(19, 136, 8, 0.1)', timeline: 'var(--p3-bg)',
+    workspace: 'rgba(19, 136, 8, 0.1)', analytics: 'rgba(23, 37, 84, 0.08)',
+  };
+  const iconBg = iconBgMap[icon] || 'rgba(23, 37, 84, 0.08)';
+  return (
+    <div className="kpi-card" style={{ background: bg, borderColor: 'var(--line)' }}>
+      <div className="kpi-icon" style={{ background: iconBg, color: iconColor }}><Icon name={icon} size={22} color={iconColor} /></div>
+      <div>
+        <div className="stat-value" style={{ fontSize: '28px', color: 'var(--ink)' }}>{v}</div>
+        <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--muted)', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{l}</div>
+        {sub && <div className="small muted" style={{ marginTop: '2px' }}>{sub}</div>}
+      </div>
+    </div>
+  );
 }
 
 export function Empty({ title, children, to, toLabel }) {

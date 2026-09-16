@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import StaffShell from '../../components/StaffShell';
+import { updateQueueToken } from '../../data/queueStore';
 
 const RANGES = { sys: [90, 140], dia: [60, 90], hr: [60, 100], spo2: [95, 100], temp: [97, 99.5], rr: [12, 20], pain: [0, 3] };
 const bad = (k, v) => v < RANGES[k][0] || v > RANGES[k][1];
@@ -20,6 +21,32 @@ export default function Vitals() {
     ['rr', `${v.rr} /min`, bad('rr', v.rr)],
     ['pain', `${v.pain} /10`, bad('pain', v.pain)],
   ];
+
+  const saveVitals = () => {
+    // Sync vitals to queue store so doctor/admin dashboards see them immediately
+    updateQueueToken(id, {
+      vitals: {
+        bp: `${Math.round(v.sys)}/${Math.round(v.dia)}`,
+        hr: v.hr,
+        spo2: v.spo2,
+        temp: v.temp,
+        rr: v.rr,
+        pain: v.pain,
+      },
+      vitalsBreach: cells.some(c => c[2]), // flag if any vitals are out of range
+    });
+
+    // Try to sync to backend
+    try {
+      fetch(`/api/tokens/${encodeURIComponent(id)}/vitals`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vitals: v }),
+      });
+    } catch {}
+
+    nav(`/triage/priority/${id}`);
+  };
   return (
     <StaffShell role="nurse" title={`Vitals · ${id}`} subtitle="Range-checked · NABH early-warning">
       <div className="card" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -38,7 +65,7 @@ export default function Vitals() {
       <div className="card" style={{ marginTop: 12 }}>
         {cells.filter(c => c[2]).map(c => <div key={c[0]} className="alert-banner alert-p2 small" style={{ marginBottom: 6 }}>⚠️ {c[1]} — outside range</div>)}
         {cells.every(c => !c[2]) && <div className="notice">✓ All vitals within range.</div>}
-        <button className="btn btn-primary" style={{ marginTop: 8 }} onClick={() => nav(`/triage/priority/${id}`)}>Save → Assign Priority</button>
+        <button className="btn btn-primary" style={{ marginTop: 8 }} onClick={saveVitals}>Save → Assign Priority</button>
       </div>
     </StaffShell>
   );

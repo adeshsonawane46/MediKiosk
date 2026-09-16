@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import StaffShell from '../../components/StaffShell';
-import { getQueue } from '../../data/queueStore';
+import { getQueue, updateQueueToken } from '../../data/queueStore';
 
 export default function PatientAssessment() {
   const { token = 'A-142' } = useParams();
@@ -12,6 +12,28 @@ export default function PatientAssessment() {
   const complaint = queued?.complaint || queued?.chiefComplaint || 'Chest heaviness + exertional dyspnea ~24h';
   const [form, setForm] = useState({ consciousness: 'Alert', pain: '8', notes: '' });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const saveAndContinue = () => {
+    // Sync rapid assessment to queue store so doctor/admin see it immediately
+    updateQueueToken(token, {
+      assessment: {
+        consciousness: form.consciousness,
+        pain: form.pain,
+        notes: form.notes,
+      },
+    });
+
+    // Try to sync to backend
+    try {
+      fetch(`/api/tokens/${encodeURIComponent(token)}/assessment`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assessment: form }),
+      });
+    } catch {}
+
+    nav(`/triage/vitals/${token}`);
+  };
   return (
     <StaffShell role="nurse" title={`Assessment · ${token}`} subtitle={`${patientName}, ${ageSex} · kiosk intake summary`}>
       <div className="split split-2">
@@ -28,7 +50,7 @@ export default function PatientAssessment() {
           <div className="field"><label>Pain VAS (0–10): {form.pain}</label><input type="range" min="0" max="10" value={form.pain} onChange={e => set('pain', e.target.value)} style={{ width: '100%' }} /></div>
           <div className="field"><label>Notes</label><textarea className="input staff" rows={3} placeholder="Breathing, skin, neuro…" value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-primary btn-sm" onClick={() => nav(`/triage/vitals/${token}`)}>Save &amp; Vitals →</button>
+            <button className="btn btn-primary btn-sm" onClick={saveAndContinue}>Save &amp; Vitals →</button>
             <Link className="btn btn-ghost btn-sm" to="/triage/dashboard">Cancel</Link>
           </div>
         </div>
